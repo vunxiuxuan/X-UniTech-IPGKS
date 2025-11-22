@@ -1,0 +1,442 @@
+·
+folder "prjs" "WRO2025"
+
+Function setLampOn(in number port)
+  Sensor.WriteI2CRegister(port,0,98,1)
+EndFunction
+
+Function setLampOff(in number port)
+  Sensor.WriteI2CRegister(port,0,98,0)
+EndFunction
+
+Function getSignature(in number port, in number sig, out number x, out number y)
+  address = 80 + sig
+  values = Sensor.ReadI2CRegisters(port, 1, address, 3)
+  x = values[1]
+  y = values[2]
+EndFunction
+
+Function setMultiplexerMode(in number port, in number chanel, in number mode)
+  address = 80 + 1 * (chanel - 1)
+  Sensor.WriteI2CRegister(port,address,82,mode)
+EndFunction
+
+Function getMultiplexerValue(in number port, in number chanel, out number values)
+  address = 80 + 1 * (chanel - 1)
+  readData = Sensor.ReadI2CRegisters(port,address,84,2)
+  values = readData[1] * 256 + readData[0]
+EndFunction
+
+Sensor.SetMode(2,0)
+Sensor.SetMode(4,2)
+setMultiplexerMode(3,2,0)
+setMultiplexerMode(3,3,0)
+
+Sub ReadSensor
+  While "True"
+    getSignature(1,1,greenx,greeny)
+    getSignature(1,2,redx,redy)
+    getSignature(1,3,pinkx,pinky)
+    
+    gyro = Sensor.ReadRawValue(2,0)
+    relativeHeading = gyro - @target
+    
+    getMultiplexerValue(3,2,leftWall)
+    getMultiplexerValue(3,3,rightWall)
+    LCD.Clear()
+    LCD.Text(1,0,40,2,leftWall)
+    LCD.Text(1,0,60,2,rightWall)
+  EndWhile
+EndSub
+
+Thread.Run = ReadSensor
+
+dCounted=0
+Mapx=0
+Mapy=0
+Sub GetXY
+  While "True"
+    Mapy = Mapy + (Motor.GetSpeed("D") * Math.Round(Math.Cos(Math.GetRadians(gyro))*10) * 0.1) * 0.001
+    If cw=1 Then
+      If Mapy>40 Then
+        Mapy=40
+      EndIf
+      If Mapy<-20 Then
+        Mapy=-20
+      EndIf
+    Else
+      If Mapy>25 Then
+        Mapy=25
+      EndIf
+      If Mapy<-40 Then
+        Mapy=-40
+      EndIf
+    EndIf
+    LCD.Clear()
+    'LCD.Text(1,0,0,2,Mapx)
+    LCD.Text(1,0,20,2,Mapy)
+  EndWhile
+EndSub
+
+Thread.Run = GetXY
+
+intergal = 0
+lastError = 0
+Function PID(in number turn, in number kp, in number ki, in number kd)
+  error = (44 + turn) - Motor.GetCount("A") '<--------------------Steering reset
+  p = error * kp
+  
+  @intergal = @intergal + error
+  If @intergal>5 Then
+    @intergal = 5
+  ElseIf @intergal<-5 Then
+    @intergal=-5
+  ElseIf error=0 Then
+    @intergal = 0
+  EndIf
+  i = @intergal*ki
+  
+  d = (error-@lastError)*kd
+  
+  result = p+i+d
+  Motor.StartPower("A",result)
+  @lastError = error
+EndFunction
+
+Sub ResetSteering
+  Motor.StartPower("A",-70)
+  Program.Delay(350)
+  While Motor.GetSpeed("A")<>0
+  EndWhile
+  Motor.ResetCount("A")
+EndSub
+
+wallDistance = 400 '<-----------------Follow outer wall distance
+lastPillar = 0
+trackWall = 0
+trackPillar = 0
+followWallLogic = 0
+followWallResponse = 0.2
+loopCount = 0
+dDegrees = 0
+greenH = 170
+redH = 170
+
+Function Drive(in number speed)
+  If speed > 0 Then
+    correction = 1
+  Else
+    correction = -1
+  EndIf
+  
+  If Sensor.ReadRawValue(4,0)=0 Or @leftWall=0 Or @rightWall=0 Then
+    Motor.StartPower("D",0)
+  Else
+    Motor.StartPower("D",speed*1.5)
+  EndIf
+  
+  If (@leftWall<150 Or @rightWall<150) And @trackWall=1 Then
+    If @leftWall<150 And @redY<120 Then
+      turn = -30
+    ElseIf @rightWall<150 And @greenY<120 Then
+      turn = 30
+    EndIf
+  Else
+    trackWall=0
+    '-------------------Hypothaneuse area calculation-------------------'
+    greenDis = Math.SquareRoot(Math.Power(@greenx-130,2)+Math.Power(255-@greeny,2))
+    redDis = Math.SquareRoot(Math.Power(@redx-130,2)+Math.Power(255-@redy,2))
+    pinkDis = Math.SquareRoot(Math.Power(@pinkx-130,2)+Math.Power(255-@pinky,2))
+    
+    'Avoid or not avoid pillar
+    If @loopCount<1 And @relativeHeading>85 Then
+      logic=0
+    Else
+      logic=1
+    EndIf
+    
+    'Follow or Avoid Pillar
+    If (greenDis<@greenH Or redDis<@redH Or pinkDis<170) And @trackPillar=1 And logic=1 Then
+      If greenDis<redDis And greenDis<pinkDis Then
+        @lastPillar = 1
+        EV3.SetLEDColor("GREEN","NORMAL")
+        If @greeny>120 Then
+          turn = (@greenAvoid-@greenx)*@greeny/100*0.6 'avoid pillar
+        Else
+          turn = (@greenFollow-@greenx)*@greeny/100*0.5 'keep car in the middle
+        EndIf
+      ElseIf redDis<greenDis And redDis<pinkDis Then
+        @lastPillar = 2
+        EV3.SetLEDColor("RED","NORMAL")
+        If @redy>115 Then
+          turn = (@redAvoid-@redx)*@redy/100*0.6 'avoid pillar
+        Else
+          turn = (@redFollow-@redx)*@redy/100*0.5 'keep car in the middle
+        EndIf
+      Else
+        EV3.SetLEDColor("ORANGE","NORMAL")
+        If @cw=1 Then
+          turn = (0-@pinkx) * @pinky/100*0.5
+        Else
+          turn = (255-@pinkx) * @pinky/100*0.5
+        EndIf
+      EndIf
+    Else
+      EV3.SetLEDColor("OFF","NORMAL")
+      If Math.Abs(@relativeHeading) < 20 Then
+        If @cw=1 Then
+          followWall = (@leftWall - @wallDistance) * @followWallResponse
+        Else
+          followWall = (@rightWall - @wallDistance) * -@followWallResponse
+        EndIf
+      Else
+        followWall = 0
+      EndIf
+      
+      turn = (@relativeHeading*correction + (followWall * @followWallLogic))
+    EndIf
+  EndIf
+  
+  PID(turn,5,0.1,4)
+EndFunction
+
+Function waitDegrees(in number speed, in number degrees, in number stop)
+  Motor.ResetCount("D")
+  While Math.Abs(Motor.GetCount("D"))<degrees
+    Drive(speed)
+  EndWhile
+  If stop=1 Then
+    Motor.Stop("D","True")
+    Program.Delay(50)
+  EndIf
+EndFunction
+
+Function SteeringDrive(in number steering, in number speed, in number degrees, in number stop)
+  Motor.ResetCount("D")
+  While Math.Abs(Motor.GetCount("D"))<degrees
+    If Sensor.ReadRawValue(4,0)=0 Or @leftWall=0 Or @rightWall=0 Then
+      Motor.StartPower("D",0)
+    Else
+      Motor.StartPower("D",speed)
+    EndIf
+    PID(steering,5,0.1,4)
+  EndWhile
+  If stop=1 Then
+    Motor.Stop("D","True")
+    Program.Delay(50)
+  EndIf
+EndFunction
+
+Function Brake(in number stop)
+  If stop = 1 Then
+    Motor.Stop("D", "True")
+    Motor.Stop("A", "True")
+    Program.Delay(300)
+  EndIf
+EndFunction
+
+'-------------------------------------------------Program Start----------------------------------------------------'
+
+'--------------------------In the parking lot area----------------------'
+setLampOn(1)
+ResetSteering()
+
+If leftWall>rightWall Then  '-----------ccw-------------'
+  Speaker.Tone(100,1000,50)
+  target=-90
+  cw=-1
+  
+  'Pillar X value
+  greenAvoid=225
+  greenFollow=120
+  redAvoid=10 
+  redFollow=80
+  
+ Else                     
+  Speaker.Tone(100,200,50)
+  target=90
+  cw=1
+  
+  'Pillar X value
+  greenAvoid=235 
+  greenFollow=160
+  redAvoid=10 
+  redFollow=100
+  
+EndIf
+
+'--------------------------Get out from magenta parking lot--------------------------------------'
+
+trackPillar=0
+trackWall=0
+
+
+waitDegrees(-35,90,0)
+waitDegrees(35,180,0)
+Speaker.Tone(100,600,100)
+
+'-------------------Position the robot to become target 0 again---------------------'
+target=0
+trackWall = 1
+trackPillar=1
+mainSpeed=45 '<-------------------------------------Main speed
+
+If cw=1 Then
+  While Sensor.ReadRawValue(4,0)<>5
+    Drive(mainSpeed*0.9)
+  EndWhile
+Else
+  While Sensor.ReadRawValue(4,0)<>0 And Sensor.ReadRawValue(4,0)<>2 And Sensor.ReadRawValue(4,0)<>7
+    Drive(mainSpeed*0.9)
+  EndWhile
+EndIf
+Speaker.Tone(100,600,100)
+
+setLampOn(1)
+
+'------------------------------------------Get into second section-----------------------------------------------
+
+For loopCount = 1 To 11
+  @redH = 170
+  @greenH = 170
+  followWallLogic = 1
+  If loopCount<7 Then
+    target = target + 90 * cw
+  Else
+    target = target + 90.5 * cw
+  EndIf
+  
+  If cw=1 Then
+    If lastPillar = 1 Then
+      degrees = 1600 'cw green is last
+    Else
+      degrees = 1450 'cw red is last
+    EndIf
+  Else
+    If lastPillar = 2 Then
+      degrees = 1450 'ccw red is last
+    Else
+      degrees = 1600 'ccw green is last
+    EndIf
+  EndIf
+  
+  waitDegrees(mainSpeed,degrees,0)
+  Speaker.Tone(100,1500,100)
+  
+  
+ 
+  followWallLogic = 1 '<------------------------------Follow Wall Logic off'
+  If cw=1 Then
+    While Sensor.ReadRawValue(4,0)<>5 And Sensor.ReadRawValue(4,0)<>7
+      Drive(mainSpeed*0.9)
+    EndWhile
+  Else
+    While Sensor.ReadRawValue(4,0)<>0 And Sensor.ReadRawValue(4,0)<>2
+      Drive(mainSpeed*0.9)
+    EndWhile
+  EndIf
+  
+  Speaker.Tone(100,600,100)
+EndFor
+
+followWallLogic = 0'<-----------------------------------------Follow Wall Logic on'
+
+redAvoid=0 ' 2
+greenAvoid=255
+target = target + 90 * cw
+
+
+If cw=-1 Then
+  While Mapy<-20
+    Drive(mainSpeed)
+  EndWhile
+  @redH = 50
+  @greenH = 50
+EndIf
+
+If cw=1 Then
+  While Mapy<4
+    Drive(mainSpeed)
+  EndWhile
+Else
+  While Mapy<-16
+    Drive(mainSpeed)
+  EndWhile
+EndIf
+
+Motor.Stop("D","True")
+Program.Delay(500)
+
+'---------------------------------------Let's Parking!------------------------------------'
+trackPillar=0
+trackWall=0
+mainSpeed=35
+followWallLogic = 0
+
+If cw=1 Then
+  While Mapy>-10
+    Drive(-35)
+  EndWhile
+Else
+  
+  While Mapy>-25
+    Drive(-35)
+  EndWhile
+EndIf
+
+followWallLogic = 1
+wallDistance = 300
+followWallResponse = 0.5
+
+Time.Reset7()
+While Time.Get7()<3000
+  Drive(-35)
+EndWhile
+
+Brake(1)
+Program.Delay(500)
+
+
+trackwall=0
+followWallLogic=1
+followWallResponse = 0.5
+mainSpeed=35 
+
+If cw = -1 Then
+  wallDistance = 260
+  waitDegrees(mainSpeed,800,0)
+  Speaker.Tone(50,250,500)
+  While rightWall>130
+    Drive(mainSpeed *0.7)
+  EndWhile
+  Speaker.Tone(50,200,50) 
+  followWallLogic=1
+  waitDegrees(mainSpeed*0.7,430,1) 
+  Speaker.Tone(50,200,50)
+  Program.Delay(200)
+  SteeringDrive(60,40,235,1)
+  SteeringDrive(-60,-40,180,1)
+  SteeringDrive(60,-40,370,1)
+  SteeringDrive(-6,30,25,1)
+  
+Else
+  wallDistance = 260
+  waitDegrees(mainSpeed,400,1)
+  Speaker.Tone(50,250,500)
+  While leftWall>130
+    Drive(mainSpeed*0.7)
+  EndWhile
+  Speaker.Tone(50,50,50)
+  followWallLogic=1
+  waitDegrees(mainSpeed*0.75,450,1) 
+  Speaker.Tone(50,200,50)
+  Program.Delay(200)
+  SteeringDrive(-60,40,215,1)
+  SteeringDrive(60,-50,150,1)
+  SteeringDrive(-60,-40,375,1)
+  SteeringDrive(6,30,25,1)
+EndIf
+Brake(1)
+Motor.Stop("D","True")
+Speaker.Tone(100, 500, 100)
+

@@ -1,0 +1,191 @@
+folder "prjs" "WRO2025"
+Speaker.Tone(100,440,50)
+
+Function setMultiplexerMode(in number port, in number channel, in number mode)
+  address = 80 + 1 * (channel - 1)
+  Sensor.WriteI2CRegister(port, address, 82, mode)
+EndFunction
+
+Function getMultiplexerValues(in number port, in number channel, out number values)
+  address = 80 + 1 * (channel - 1)
+  readData = Sensor.ReadI2CRegisters(port, address, 84, 2)
+  values = readData[1] * 256 + readData[0]
+EndFunction
+
+Sensor.SetMode(2,0)
+Sensor.SetMode(4,2)
+setMultiplexerMode(3,2,0)
+setMultiplexerMode(3,3,0)
+
+Sub ReadSensor 
+  While "True"
+    gyro = Sensor.ReadRawValue(2,0)
+    relativeHeading = gyro-target
+    getMultiplexerValues(3,2,leftWall)
+    getMultiplexerValues(3,3,rightWall)
+    LCD.Clear()
+    LCD.Text(1,0,40,2,leftWall)
+    LCD.Text(1,0,60,2,rightWall)
+  EndWhile
+EndSub
+
+Thread.Run = ReadSensor
+
+x=0
+y=0
+Sub GetXY
+  While "True"
+    x = x + (Motor.GetSpeed("D") * Math.Round(Math.Sin(Math.GetRadians(gyro))*10) * 0.1) * 0.001
+    y = y + (Motor.GetSpeed("D") * Math.Round(Math.Cos(Math.GetRadians(gyro))*10) * 0.1) * 0.001
+    If x>20 Then
+      x = 20
+    EndIf
+    If x<-20 Then
+      x=-20
+    EndIf
+    If y>20 Then
+      y=20
+    EndIf
+    If y<-20 Then
+      y=-20
+    EndIf
+    LCD.Clear()
+    LCD.Text(1,0,0,2,x)
+    LCD.Text(1,0,20,2,y)
+  EndWhile
+EndSub
+
+Thread.Run = GetXY
+
+Sub ResetSteering
+  Motor.StartPower("A",-70)
+  Program.Delay(350)
+  While Motor.GetSpeed("A")<>0
+  EndWhile
+  Program.Delay(100)
+  Motor.ResetCount("A")
+EndSub
+
+intergal = 0
+lastError = 0
+Function PID_Steering(in number value1, in number value2, in number kp, in number ki, in number kd)
+  error = value1 - value2
+  p = error * kp
+  
+  @intergal = @intergal + error
+  If @intergal>5 Then
+    @intergal = 5
+  ElseIf @intergal<-5 Then
+    @intergal = -5
+  ElseIf error = 0 Then
+    @intergal = 0
+  EndIf
+  
+  i = @intergal * ki
+  
+  d = (error-@lastError) * kd
+  @lastError = error
+  
+  correction = p + i + d
+  Motor.StartPower("A",correction)
+EndFunction
+
+trackWall=0
+Function Drive(in number speed)
+  If @leftWall = 0 Or @rightWall = 0 Then
+    Motor.StartPower("D",0)
+  Else
+    Motor.StartPower("D",speed)
+  EndIf
+  
+  If @trackWall = 1 Then
+    If @cw = 1 And Math.Abs(@relativeHeading)<40 Then
+      wallTurn = (170 - @rightWall) * 0.1
+    ElseIf @cw = -1 And Math.Abs(@relativeHeading)<40 Then
+      wallTurn = (@leftWall - 170) * 0.1 '200
+    EndIf
+    
+    If wallTurn>40 Then
+      wallTurn = 39
+    ElseIf wallTurn<-40 Then
+      wallTurn = -39
+    EndIf
+  EndIf
+  
+  turn = 43 + @relativeHeading + wallTurn
+  PID_Steering(turn,Motor.GetCount("A"),6,0.1,5)
+EndFunction
+
+Function DriveDegrees (in number speed, in number degrees, in number stop)
+  Motor.ResetCount ("D")
+  While Math.Abs (Motor.GetCount("D"))<degrees
+    Drive (speed)
+  EndWhile
+  If stop = 1 Then
+    Motor.Stop ("D", "True")
+  EndIf
+EndFunction
+
+'-------------------------------First section--------------------------------'
+target = 0
+cw = 0
+trackWall = 0
+
+While @leftWall<2000 And @rightWall<2000
+  Drive(45)
+EndWhile
+
+If @rightWall>800 Then
+  cw = 1
+Else
+  cw = -1
+EndIf
+
+'---------------------------------------Get in second section-------------------------'
+target = target + 89.5 * cw
+trackWall = 0
+DriveDegrees(80,1450,0)
+Speaker.Tone(100,400,50)
+
+trackWall = 1
+DriveDegrees(80,700,0)
+Speaker.Tone(100,400,50)
+
+If cw = 1 Then
+  While @rightWall<800
+    Drive(80) '<-----------------Speed
+  EndWhile
+Else
+  While @leftWall<800
+    Drive(80) '<-----------------Speed
+  EndWhile
+EndIf
+Speaker.Tone(100,800,50)
+
+'---------------------------------------Get in 10 section-------------------------'
+
+For loopCount= 1 To 2
+  trackWall = 1
+  target = target + 90 * cw
+  DriveDegrees(80,1350,0)
+  Speaker.Tone(100,400,50)
+  If cw = 1 Then
+    While @rightWall<800
+      Drive(80) '<-----------------Speed
+    EndWhile
+  Else
+    While @leftWall<800
+      Drive(80) '<-----------------Speed
+    EndWhile
+  EndIf
+  Speaker.Tone(100,800,50)
+EndFor
+
+'-Get in last section-'
+
+target = target + 90 * cw
+While y<-1 or y>1
+  Drive(80)
+EndWhile
+Motor.Stop("D","True")
+Program.Delay(2500)
