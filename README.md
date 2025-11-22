@@ -13,7 +13,7 @@
 
 **other** This folder contains other files which can be used to understand how to prepare the vehicle for the competition.
 
-Here attached with the link for our complete documentation module (https://drive.google.com/file/d/107QRZqFFLUvLz7qMj4gl7RzuqnLO4l_k/view?usp=sharing)
+Here attached with the link for our **COMPLETE DOCUMENTATION MODULE** (https://drive.google.com/file/d/107QRZqFFLUvLz7qMj4gl7RzuqnLO4l_k/view?usp=sharing)
 
 # Table of Contents (Essay)
 - [Introduction](#introduction)
