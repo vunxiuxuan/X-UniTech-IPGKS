@@ -1,4 +1,3 @@
-<img width="940" height="645" alt="image" src="https://github.com/user-attachments/assets/6de0128a-e863-48fa-94df-1300938a22c2" /><img width="940" height="645" alt="image" src="https://github.com/user-attachments/assets/6748f46b-bb89-485f-a6c2-44a41cb568e6" />
 # Content (GitHub)
 **schemes** This folder contains one or several schematic diagrams in the form of JPEG, PNG, or PDF of the electromechanical components illustrating all the elements (electronic components and motors) used in the vehicle and how they connect. This folder also included the schematic diagram of the robot for both open and obstacle challenge.
 
