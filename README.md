@@ -26,17 +26,17 @@
 
 - [2.0 Power and Sense Management](#20-power-and-sense-management)
   - [2.1 Power source](#21-power-source)
-  - [2.2 Sensors](#22-sensors)
+  - [2.2 Sensor](#22-sensor)
   - [2.3 Build Of Materials (BOM)](#23-build-of-materials-bom)
   - [2.4 Wiring diagram](#24-wiring-diagram)
 
-- [3.0 Obstacle Management](#30-obstacle-management)
+- [3.0 Obstacles Management](#30-obstacles-management)
   - [3.1 Open Challenge](#31-open-challenge)
   - [3.2 Obstacle Challenge](#32-obstacle-challenge)
 
 - [4.0 Engineering Factors](#40-engineering-factors)
   
-- [5.0 Improvement and Enhancement](#50-improvement-and-enhancement)
+- [5.0 Improvements and Enhancements](#50-improvements-and-enhancements)
   - [5.1 Robot Construction](#51-robot-construction)
   - [5.2 Robot Programming](#52-robot-programming)
 
@@ -175,6 +175,509 @@ Building Instruction of Self-Driving Car (PDF format)
 3D Printing Process Video
 
 <img width="250" height="250" alt="3D Printing Process Video" src="https://github.com/user-attachments/assets/35378bb6-5235-4c56-966c-2b47691c22bf" />
+
+# 2.0 Power and sense management
+This section details the vehicle's power source and sensor systems. It covers the selection rationale and implementation of each sensor, along with an analysis of the system's power consumption. A complete Build of Materials (BOM) and wiring diagram are also provided for reference.
+
+## 2.1 Power Source
+The self-driving car is powered by a Soshine 1.5V AA rechargeable lithium-ion (Li-ion) battery with an energy capacity of 2600 mWh. This battery technology was selected for its stable voltage output, which ensures consistent and reliable performance for all electronic components.
+
+<img width="1920" height="1080" alt="Soshine Rechargeable AA Lithium-Ion Battery" src="https://github.com/user-attachments/assets/e8abd1cd-4cb5-40e9-a2c1-207449a67023" />
+
+
+
+## 2.2 Sensor
+The self-driving car is designed to handle the diverse requirements of the Open and Obstacle Challenges. It includes one color sensor, two ultrasonic sensors, one gyro sensor, and a Pixy2 camera. The diagram below illustrates the placement and integration of these components.
+
+<img width="860" height="465" alt="Sensors" src="https://github.com/user-attachments/assets/78331f56-3102-4a15-b7cd-ac550d0b374e" />
+
+
+
+**(i) Pixy2 camera** 
+
+The Pixy2 camera serves as the primary vision system for the vehicle during the Obstacle Challenge. Its main function is real-time object detection, allowing it to simultaneously identify and track the red and green pillars while the vehicle is in motion. It also helps to scan the magenta-colored parking zone to ensure the vehicle avoids this restricted area while navigating the course. The Pixy2 camera is mounted at a 65° angle to provide optimal visibility when tracking traffic signs.
+
+<img width="500" height="400" alt="Pixy2 Camera" src="https://github.com/user-attachments/assets/f3a4ec2f-25fe-405b-a306-32baf5eab139" />
+
+
+<img width="500" height="400" alt="65° Pixy2 Camera" src="https://github.com/user-attachments/assets/19f715e7-009c-45e8-9d5f-7d7991dfc067" />
+
+
+
+
+**(ii) Gyro sensor**
+
+One gyro sensor is used to support our self-driving car. During both Open and Obstacle Challenge, it helps to measure angles and maintain the correct heading while driving. The gyro sensor also helps the robot to turn at accurate angle after passing the edge of the inner wall. While the gyro sensor can sometimes display errors at startup due to calibration issues, we resolved this by performing a hard reset before each run.
+
+<img width="1920" height="1080" alt="Gyro Sensor" src="https://github.com/user-attachments/assets/bd85f198-947c-4ae1-a1b7-ebc95725d62f" />
+
+
+
+**(iii) Ultrasonic sensor**
+
+Our self-driving car is equipped with two EV3 ultrasonic sensors. These sensors measure the distance between the robot and wall to avoid collision towards the walls. The sensors operate by emitting sound waves and calculating the time it takes for them to bounce back after hitting a wall. This data enables the self-driving car to navigate efficiently, make accurate turns, and aim to complete the Open Challenge in the shortest time possible.
+
+<img width="1920" height="1080" alt="Ultrasonic Sensor" src="https://github.com/user-attachments/assets/9b52f57b-6064-4ec2-942a-c995cfd6dd3c" />
+
+
+
+**(iv) Color sensor**
+
+The colour sensor is only used in the Obstacle Challenge to determine when the self-driving car should turn. In a clockwise direction, the car turns right whenever it detects an orange line, while in a counterclockwise direction, it turns left upon detecting a blue line. The sensor functions by measuring the intensity of light entering it, allowing the car to identify colour lines and determine whether it is moving clockwise or counterclockwise. 
+
+<img width="1920" height="1080" alt="Color Sensor" src="https://github.com/user-attachments/assets/23ab26fb-c364-4723-88a9-22fc39e13672" />
+
+
+
+## 2.3 Build of materials (BOM)
+
+The table below shows the Build of Materials (BOM) used to build the self-driving car, making sure each part matches the car’s needs and functions.
+
+![Build of Materials (1)](https://github.com/user-attachments/assets/9e9f3599-7feb-4877-87d8-f01668d08083)
+
+
+![Build of Materials (2)](https://github.com/user-attachments/assets/e752d094-8206-4ed4-89d2-da396c3b617b)
+
+
+![Build of Materials (3)](https://github.com/user-attachments/assets/2271334b-5652-4ce3-8639-68e5b48cc638)
+
+
+![Build of Materials (4)](https://github.com/user-attachments/assets/851443a5-23d3-4921-a65a-7049e75b4071)
+
+
+![Build of Materials (5)](https://github.com/user-attachments/assets/dd68a0f8-b9b2-4e3e-8c2e-168471174423)
+
+
+![Build of Materials (6)](https://github.com/user-attachments/assets/f044b50f-3f4b-4e11-9e41-ac1782f832a8)
+
+
+
+## 2.4 Wiring diagram
+The wiring diagram below illustrates the sensors’ power consumption and shows how the motors and sensors are connected within our self-driving car to support the setups for both the Open Challenge and the Obstacle Challenge. 
+
+**(i) Open challenge wiring diagram**
+
+<img width="1920" height="1080" alt="Open Challenge Wiring Diagram" src="https://github.com/user-attachments/assets/917123b5-817e-4985-9e7c-a76ad723af4f" />
+
+
+
+**(ii) Obstacle challenge wiring diagram**
+
+<img width="1920" height="1080" alt="Obstacle Challenge Wiring Diagram" src="https://github.com/user-attachments/assets/9d8700f3-ab9e-44b7-9f4b-bbb29ec05ad4" />
+
+# 3.0 Obstacles Management
+In our project, we utilize the Clev3r-Python programming language to operate the robot. The programming structure is divided into two main sections which is the Open Challenge and the Obstacle Challenge. This section includes a flowchart and an overview of the code used for both challenges. 
+
+## 3.1 Open Challenge
+To complete the open challenge, our robot uses two main sensors which is an EV3 Gyro Sensor and two EV3 Ultrasonic Sensors on both the left and right sides. Since both EV3 Ultrasonic Sensors share the same port, we use a multiplexer to allow the robot to read data from each one separately. The left ultrasonic sensor is connected to Channel 2 of the multiplexer, while the right ultrasonic sensor is connected to Channel 3.
+
+<img width="1920" height="1080" alt="Gyro Sensor and Ultrasonic Sensor" src="https://github.com/user-attachments/assets/45020216-7922-4002-a9a2-7f2c5fd4d31a" />
+
+
+
+The EV3 Ultrasonic Sensors helps the car to measure the distance between the robot and the walls. By comparing readings from the left and right sensors, the robot can determine whether it should move clockwise or counter clockwise. These readings also help the robot adjust its steering to avoid collisions and stay at a safe distance from inner and the outer walls. Additionally, the EV3 Gyro Sensors monitor the robot’s heading, ensuring it maintains a straight path and performs accurate turns at the correct angle when turning. 
+
+<img width="1920" height="1080" alt="Determine Direction (1)" src="https://github.com/user-attachments/assets/e06d8279-6bf6-4f5d-81e2-6127b51e55ca" />
+
+
+In a quick overview, when the robot starts, it first checks and sets up all its sensors. Next, it resets its steering before moving. The robot then uses a PID control system to ensure smooth and stable turns. A drive function controls its speed and distance based on sensor data. Finally, the main program combines all these functions, enabling the robot to follow walls, make precise turns, and complete all laps efficiently and accurately. Further explanations of each function and programming part are provided in the 3.1.1 section below.
+
+Diagram below shows the flowchart for Open Challenge: 
+
+<img width="475" height="680" alt="Open Challenge Flow Chart" src="https://github.com/user-attachments/assets/20ee63ea-7d1e-4a33-aedb-8a48f9da2328" />
+
+
+
+Appendix 2 contains the complete programming code for the Open Challenge.
+
+### 3.1.1	Coding explanation
+Below is a brief explanation of the key parts of the code used to control the robot during the challenge.
+
+(a)	Initialization and Setup
+
+This part is aim to set up the sensors and multiplexer before running. The setMultiplexerMode function allows the EV3 to connect with both ultrasonic sensors in the same port while the getMultiplexerValues function allows the robot to read the distance values from the left and right ultrasonic sensors. Additionally, the ReadSensor continuously updates the robot’s heading and wall distances in real time.
+
+<img width="745" height="594" alt="Initialization and Setup" src="https://github.com/user-attachments/assets/a53ffbee-6a30-403d-b8af-f371a4b2d3f4" />
+
+
+
+(b) Car Position Coordinate Tracking
+
+This part of the program is about position tracking using a gyro sensor and motor speed. It continuously calculates the robot’s position on the X and Y axis based on how fast the motor is spinning and the angle detected by the gyro sensor. The Math.Sin and Math.Cos functions are used to determine the direction of movement, converting the robot’s rotation into horizontal (x) and vertical (y) changes. The program keeps updating these values in real time, showing them on the LCD screen. To prevent errors, it also limits both the X and Y positions to a range between -20 and 20. In simple terms, this part allows the robot to “know” where it is moving by combining speed and direction data, then displays its current position on the screen.
+
+<img width="699" height="361" alt="Car Position Coordinate Tracking" src="https://github.com/user-attachments/assets/6b5248a6-df3a-4a7e-83ea-630813f52406" />
+
+
+(c) Reset Steering
+
+Reset Steering make sure the steering motor starts at a fixed desired position before driving. The robot turns the steering motor all the way to the left for 300 milliseconds by using the medium motor in the port A. Hence, it waits until the motor completely stops moving, which means it has hit the limit. After that, the motor’s rotation is reset to zero. This step is important because it gives the information to the robot exactly where the “straight ahead” position is.
+
+<img width="451" height="257" alt="Reset Steering" src="https://github.com/user-attachments/assets/60e26918-6d16-4a41-b185-4985d51db871" />
+
+
+
+(d) PID Steering Control
+
+The PID Steering function helps the robot to adjust the steering motor whenever it starts to drift off from the target. The P part fixes most of the error right away, the I part makes small adjustments over time and the D part make sure that the correction is done smoothly. These three adjustments are added together to get one correction value, which is sent to motor A to turn the steering. This keeps the robot moving smoothly, avoiding zig-zagging, and makes its turns more accurate.
+
+<img width="717" height="362" alt="PID Steering function" src="https://github.com/user-attachments/assets/4a89c8e8-b752-47f0-b284-8f500dba621c" />
+
+
+
+(e) Drive
+
+Function Drive controls how the robot drives and follows a wall. First, it checks whether the ultrasonic sensors on both sides are working. If either sensor is not detecting a wall (value = 0), the robot stops moving. This acts as a safety feature, ensuring the robot doesn’t move blindly when there is no sensor data. If both sensors are working, the robot moves forward at the given speed.
+
+  Next, when wall tracking (trackWall) is turned on, the robot adjusts its direction to stay at the correct distance from the wall. If the robot is moving clockwise, it uses the right sensor; if moving counterclockwise, it uses the left sensor. It calculates how much the robot needs to turn to maintain the proper distance and making sure it’s not too close or too far. If the error is more than or less than 40 based on the robot’s distance and the inner wall, it will perform a correction to the steering. Finally, a PID steering control ensures smooth and precise turns based on this calculation, keeping the robot aligned while following the wall safely.
+
+
+<img width="661" height="410" alt="Drive Function" src="https://github.com/user-attachments/assets/9a246d13-acf2-4cbe-a386-9e700c59942d" />
+
+
+
+  Moreover, the DriveDegrees function moves the robot forward in rotation degrees. He robot will keep driving at the given speed until the target degrees are reached, and stops the motor if stop is set to 1.
+
+<img width="753" height="206" alt="DriveDegrees Function" src="https://github.com/user-attachments/assets/2be20ba8-d542-44c5-871f-9f2dcbf409cd" />
+
+
+
+
+(f) Main program
+
+This program resets timers and steering, then drives forward until it detects a wall on either side. It determines whether to follow the right or left wall based on sensor readings.
+
+<img width="480" height="366" alt="Determine Direction" src="https://github.com/user-attachments/assets/a4d46f80-6c0e-4bff-97ea-f95532cf990b" />
+
+
+<img width="1272" height="431" alt="Determine Direction (2)" src="https://github.com/user-attachments/assets/d58c8a4b-1f1b-484f-9ff1-56f77e3fbcd6" />
+
+
+
+  When the robot enters the second section, it does not immediately start wall tracking. Instead, it first drives a certain distance in degrees before activating wall tracking. This is done to prevent sudden corrections. If the robot starts tracking the wall when the sensor values are far from the desired distance, it could make a sharp turn and accidentally hit the wall. After driving the initial distance, wall tracking (trackWall) is turned on, and the robot begins adjusting its direction to follow the wall smoothly. While tracking, the robot moves at a controlled speed of 80, which ensures stable motion and reduces the risk of collisions as it approaches the wall.
+
+<img width="530" height="522" alt="TrackWall" src="https://github.com/user-attachments/assets/30b3bb10-a3b7-4a90-bf23-ce0ba29cfe4a" />
+
+  Then, it loops the same program for 10 times, turning 90° in the chosen direction in every loops. After completing the 10 loops, the robot enters the last section. It updates the target from time to time and drives forward while checking the Y-coordinate until it is roughly within the range -1 to 1, which represent that the robot will stop at the (0,0) position. Once there, the robot stops all motors and pauses for 2.5 seconds to complete the task.
+
+<img width="794" height="521" alt="Y-coordinate" src="https://github.com/user-attachments/assets/fcaa00d1-e8bf-49af-a77e-82b80ce4a1f8" />
+
+
+
+## 3.2 Obstacle Challenge
+To complete the Obstacle Challenge, our robot utilizes four sensors which is one Pixy2 Camera, one gyro sensor, two ultrasonic sensors on both the left and right sides and one colour sensor. Since both ultrasonic sensors need to be connected to the same port, we use the multiplexer so that the robot can read data from both of the sensors.
+
+
+<img width="1920" height="1080" alt="Sensors" src="https://github.com/user-attachments/assets/5eea41fc-5749-47a5-9d5e-d648d1c71e56" />
+
+
+
+The Pixy2 Camera is connected to port 1 and it helps to detect the presence of pillars and magenta parking lot during the round. Next, the EV3 Gyro Sensor that connected to port 2 helps to ensures that the robot does the accurate turns and keep the robot’s heading straight during the round. In addition, both of the EV3 Ultrasonic Sensor is connected to EV3 Brick port 3 via the multiplexer. They help to detect the presence of the inner and outer wall and prevent the robot from hitting into the wall. Lastly, we utilize the EV3 Colour Sensor to identify the coloured line on the map which is the orange and blue line. The identified colour allows the robot to know the direction accurately. For instance, if orange line is scanned first, the direction will be in clockwise direction.
+
+Here is the quick overview about the program. When the robot begins, it first resets its steering mechanism to ensure it starts from a centred and accurate position. As the robot drives, a PID steering control system is used to maintain stable movement and the correction such as gyro correction and keeping optimum distances from the outer wall. During the round, the Drive function continuously combines inputs from pillar detection, wall tracking, and PID correction. The sensors such as Pixy 2 Camera allows the robot to identify traffic sign accurately and choose the correct avoidance direction. After completing its last sections in the loop 12, the robot will reverse to hit the wall and aligns with the parking area and finally performing a side parking neatly into the magenta parking zone.
+
+
+
+Diagram below shows the flowchart for Obstacle Challenge: 
+
+<img width="1910" height="2349" alt="Obstacle Challenge Flow Chart" src="https://github.com/user-attachments/assets/f9795228-6d92-4b51-a86f-bb991470b5ce" />
+
+
+Appendix 3 contains the complete programming code for the Obstacle Challenge.
+
+### 3.2.2	Coding explanation
+
+Below is a brief explanation of the key parts of the code used to control the robot during the challenge.
+
+(a) Initialization and Set Up
+
+This part is aim to set up the Pixy2 Camera and multiplexer before running. The setLampOn and setLampOff function turns the lamp of the sensor on and off while the getSignature function allow the Pixy2Camera to read the position of the green and red pillars through their XY coordinate shown in the Pixy Mon V2 apps. The setMultiplexerMode function allows the EV3 to connect with both ultrasonic sensors in the same port while the getMultiplexerValues function allows the robot to read the distance values from the left and right ultrasonic sensors. 
+
+<img width="769" height="522" alt="Initialization and Set Up" src="https://github.com/user-attachments/assets/eb312e2a-e013-41b1-8dbe-77bb7cf4afda" />
+
+
+
+Plus, each sensor such as EV3 Gyro Sensor, EV3 Color Sensor, EV3 Ultrasonic Sensor and Pixy2 Camera must be set up to their own port before the robot starts. ReadSensor continuously updates the green (Signature 1) and red (Signature 2) pillars positions on the camera views. The magenta parking lot position (Signature 3) also updated from time to time. Moreover, the robot also reads the gyro angle and wall distance in real time so that the robot will not off from its target.
+
+<img width="394" height="361" alt="ReadSensor Function" src="https://github.com/user-attachments/assets/3ed354d4-5c6a-499e-ba67-be7f6ad0e19f" />
+
+
+The GyroReset allows the robot to reset the gyro sensor so that the gyro will measure the angles from zero again. It is like pressing the “reset” button on the EV3 Gyro Sensor so that it starts measure the heading from 0 again. This is important because it avoids cumulative errors that might affect the robot.
+
+<img width="631" height="268" alt="GyroReset Function" src="https://github.com/user-attachments/assets/f208217f-3395-4e6f-82b1-abce63c3ae28" />
+
+(b)	Car Position Coordinate Tracking
+
+This part helps to track the robot’s position by calculating its movement along the Y-axis. The robot estimates its position based on two main factors which is the speed of the drive motor and the angle measured by the gyro sensor. By applying the cosine of the gyro angle, the program determines how much of the robot’s movement contributes to vertical travel, which is the y-axis and the value will be stored in MapY. To maintain accuracy, the program continuously recalculates MapY in real time as the robot moves. The updated value is displayed on the LCD screen, allowing users to monitor the robot’s position throughout the run. To avoid unrealistic or drifting values, MapY is also restricted within a specific range. When the robot is in a clockwise direction, MapY is allowed to vary between –20 and 40. In contrast, during a counter-clockwise run, the allowed range is shifted to between –40 and 25.
+
+<img width="698" height="479" alt="Car Position Coordinate Tracking" src="https://github.com/user-attachments/assets/cf8624a0-8ddb-4129-adcc-44997ee30bce" />
+
+
+(c)	Reset Steering
+
+The ResetSteering helps to reset the steering motor before the robot starts running. It will turn the steering wheel all the way to one side and let the robot know the starting point. This is important because it will allow the robot steering always aligned in middle before it starts to move.
+
+<img width="480" height="286" alt="Reset Steering" src="https://github.com/user-attachments/assets/b1ea82db-215c-4cc3-af99-7d7ea4d29c37" />
+
+
+
+(d)	PID Steering Control
+
+The PID Steering function helps the robot to adjust the steering motor whenever it starts to drift off from the target. This function is crucial in the Obstacle Challenge because it allows the robot to maintain in the straight heading after avoiding the pillars. The P part fixes most of the error right away, the I part makes small adjustments over time and the D part make sure that the correction is done smoothly. These three adjustments are added together to get one correct value, which is sent to motor A to turn the steering. This keeps the robot moving smoothly, avoiding zig-zagging, and makes its turns more accurate.
+
+<img width="588" height="402" alt="PID Steering Control" src="https://github.com/user-attachments/assets/95a30cfb-2bf9-4de0-a0f1-0f49bd8a6dd0" />
+
+
+(e)	Drive
+
+
+The Drive function combined four main parts which including the TrackWall, TrackPillar and PID Steering. In sum, these values help the robot constantly adjust its steering and make sure the robot move smoothly and accurately.
+
+(i)	TrackWall
+
+The robot checks its distances from the walls within the range of 150mm. If it’s too close to one of the sides, it will steer away. Plus, the robot will check which wall is closer by comparing the distance values from both sides. If the left wall is closer, the robot will adjust its steering to follow the left side. If the right wall is closer, it will follow the right side instead, but with a negative steering value to turn in the opposite direction.
+
+
+<img width="894" height="279" alt="TrackWall" src="https://github.com/user-attachments/assets/a567943c-8f2a-41a8-b908-5882425187c7" />
+
+
+
+If neither wall is detected within the set range, the robot will not make any wall-following adjustments. This allows it to continue moving straight without unnecessary corrections.
+ 
+<img width="900" height="257" alt="TrackWall Adjustments" src="https://github.com/user-attachments/assets/f9c0c335-8a01-42a9-97f8-215267dcd44f" />
+
+
+
+(ii)	TrackPillar
+
+This part helps to calculate how far each pillar from the Pixy2 Camera’s view. It uses the Pythagorean theorem to figure out the straight-line distance based on the difference in horizontal (x) and vertical (y) positions.
+
+<img width="841" height="118" alt="Pythagorean Theorem" src="https://github.com/user-attachments/assets/0c5f4df6-d903-4864-8460-d0f9f4e815b3" />
+
+
+
+This part helps the robot to check the presence of red, green pillars and magenta parking lot. If the pillars are near to the robot, the robot will start reacting by showing the LED colours. If the green pillar is the closest, it sets @lastPillar = 1 and lights the green LED. Additionally, the y-coordinate (150) allows the robot to know the distance of the pillar from the Pixy2 Camera’s view. However, if the red pillar is the closest, it sets @lastPillar = 2 and light red LED. The steering will start to do the adjustment once the red pillars is located at the y-coordinate value (160) from the Pixy2 Camera’s view. If the magenta parking lot is near, the orange LED lights up. The robot will steer to the right if it is moving clockwise, or to the left if it is moving counter clockwise to avoid hitting the magenta parking lot.
+
+<img width="876" height="659" alt="TrackPillar" src="https://github.com/user-attachments/assets/2f4d8094-b993-4140-89f3-962b385ad54a" />
+
+
+
+When no pillar is nearby, the robot turns off its LED light and uses the ultrasonic sensors to follow the wall. If it is moving clockwise, it will check the left wall. Conversely, if it is moving counter clockwise, it will check the right wall. If it is too far off its intended direction (relative heading), it will not make any wall adjustments to avoid over-correcting. 
+
+<img width="900" height="219" alt="LED Light OFF" src="https://github.com/user-attachments/assets/4cf79d71-03a2-4cf8-9121-e090d6c74164" />
+
+
+
+(iii)	Steering Error
+
+The robot’s steering correction is based on a combination of pillar tracking and wall tracking. The robot then applies this correction to the PID steering motor. At the same time, it powers the drive motor which is the Motor D to move forward at runSpeed.
+
+<img width="601" height="232" alt="Steering Error" src="https://github.com/user-attachments/assets/fc3cb26a-ad6c-46bc-bd08-47a6b7650a79" />
+
+
+(f) Others movement block
+
+Below shows the others movement block that help the robot to perform better.
+
+(i)	WaitDegrees
+
+The WaitDegrees function makes the robot to move a certain distance based on the rotation of its drive motor (Motor D). The stop=1 means the robot will stops the motor and waits for a 50ms after finishing the movement.
+
+<img width="780" height="313" alt="SteeringDrive" src="https://github.com/user-attachments/assets/99769d74-2a74-4274-9cb9-55f82bda30b7" />
+
+
+
+
+(ii)	SteeringDrive
+
+The SteeringDrive function makes the robot move forward a certain distance while controlling the steering. Therefore, it will combine the current steering motor position with any additional steering adjustment during both of the challenge rounds. 
+
+ <img width="653" height="257" alt="image" src="https://github.com/user-attachments/assets/de204873-25f9-4150-b020-8e5a967def56" />
+
+
+(g) Main program
+
+When the robot starts, it first decides whether it will move in a counterclockwise or clockwise direction based on the ultrasonic sensor readings. As shown in the diagram below, if the left wall distance is greater than the right wall distance (leftWall>rightWall), the robot will know that it is counterclockwise. However, if the right wall is greater than left wall (rightWall>leftWall), the robot will know that it is in clockwise direction.
+
+<img width="760" height="553" alt="Determine Direction" src="https://github.com/user-attachments/assets/80cbedeb-f5fa-469a-8ca6-8505f74db224" />
+
+
+ 
+Next, the pillar X value tells the robot where the pillar should appear in the camera’s field of view. By using this value, the robot will avoid the pillar or adjust its path to stay centred when following it. 
+
+<img width="636" height="394" alt="image" src="https://github.com/user-attachments/assets/d665f89f-ba99-44de-a1cf-42b2b6ea9fe4" />
+
+ 
+Next, the pillar X value tells the robot where the pillar should appear in the camera’s field of view. By using this value, the robot will avoid the pillar or adjust its path to stay centred when following it. 
+
+<img width="882" height="499" alt="Pillar Value" src="https://github.com/user-attachments/assets/1668a033-7237-4e17-b719-684dd745f010" />
+
+
+After exiting the parking lot, the robot will drive forward at a speed of 45 until its colour sensor detects either a blue line or an orange line on the ground. Upon detecting a target line, the robot will immediately play a sound to indicate that the line has been found. 
+
+
+<img width="681" height="366" alt="Detect Line" src="https://github.com/user-attachments/assets/454198a4-b5d2-49eb-971a-64e37ff503ac" />
+
+
+
+During the Obstacle Round, the robot adjusts its steering by correcting any error measured from three sources which include TrackPillar and TrackWall. The redH and greenH refer to the distances of pillar from the camera view. It allows the robot to know when to do the tracking of the pillars. The steering target is slightly different depending on whether the robot is moving clockwise or counterclockwise so a different adjustment value is applied for each direction. This steering correction process is repeated for 11 loops.
+
+<img width="612" height="361" alt="LoopCount" src="https://github.com/user-attachments/assets/abb3821f-0807-47b4-82c4-98c8de5f4c68" />
+
+
+
+The below part of the program ensures the robot does not overturn and end up facing the wrong direction while avoiding a pillar. When the robot avoids a pillar on its left side, which mean it passes a green pillar in a clockwise run or a red pillar in a counterclockwise run. It needs to turn a greater number of degrees. This extra turning ensures it does not accidentally scan the wrong-coloured line, which could cause it to head in the wrong direction.
+
+<img width="460" height="404" alt="Avoid Pillar" src="https://github.com/user-attachments/assets/d274f14d-614c-4c91-a78c-98f7dd0d4b0b" />
+
+
+
+The program below indicates the robot had completed 11 loops. If the robot is moving in clockwise direction (cw=1), it will continue driving forward as long as its MapY value is less than 4. This means the robot will keep moving until it reaches the target Y-coordinate, ensuring it get into the last section completely before proceed to the reverse movement. Conversely, when the robot is moving in a counter-clockwise direction (cw= -1), the target range is different. In this case, the robot will continue driving forward while MapY is still less than –16. Ultimately, this part of the program ensures the robot get into its initial position in the last section to make sure the round is completed.
+
+<img width="331" height="284" alt="Y-coordinate" src="https://github.com/user-attachments/assets/2cbf08ee-e935-46f3-9081-294834b5a57f" />
+
+The below part of the program makes the robot reverse until it reaches the correct position. When the robot is moving clockwise, it keeps reversing until its y-coordinate becomes less than –10. When it is moving counterclockwise, it reverses further until the y-coordinate reaches –25. This helps the robot gently touch the outer wall so it can straighten itself and follow the wall more easily during the parking phase. After that, the program turns on wall-following mode, sets the wall distance to 30 cm, and uses a response value of 0.5 to help the robot correct its steering whenever the distance changes. Finally, the robot continues reversing for 3 seconds to make sure it is fully in position before starting its final parking movement.
+
+<img width="269" height="413" alt="Wall-following Mode" src="https://github.com/user-attachments/assets/d96a850e-3911-4f3e-9efc-bd4fec09deb1" />
+
+
+Both of the picture below shows the detailed program during the side parking phase. The robot will move forward while maintaining a fixed distance from the parking lot which is 260 mm for both directions. As it moves, it continuously checks this distance. If the distance goes out of range, the robot will adjust its steering to bring it back to the correct value. Once it passes the first magenta parking lot, the robot will reverse into the parking space and ensure it is parked parallel to the parking lot.
+
+
+ 	 
+<img width="792" height="317" alt="Parking" src="https://github.com/user-attachments/assets/d2b9366d-c206-4b64-87c5-a0fdfa6feb99" />
+
+ 
+The flow diagram below illustrates the detailed process of side parking.
+ 
+<img width="1920" height="1080" alt="Process of Parking" src="https://github.com/user-attachments/assets/1eb1c139-ce7f-4248-8a15-e7bf0eee0641" />
+
+# 4.0 Engineering Factors
+This section showcases our custom-designed and third-party open-source parts along with detailed explanations of all the components installed in the car. 
+
+At first, our autonomous self-driving car is primarily built using the LEGO Mindstorms Education EV3 Core Set 45544. However, we encountered several limitations while preparing for both the Open and Obstacle Challenges. For example, our design required more sensor ports than the EV3 brick could support, the Pixy2 Camera was unstable due to weak mounting, and we lacked a suitable camera system to accurately detect the pillars and the magenta parking lot. To overcome these challenges and enhance our robot’s performance, we incorporated third-party components into the design. The diagram below illustrates the additional components we used and how they helped overcome these issues.
+ 
+
+**(i)	EV3 Sensor Multiplexer**
+
+We added an EV3 Sensor Multiplexer so our robot can use five sensors at once. There are two ultrasonic sensors connected to the multiplexer with different channel. With all five working together, the robot can move more accurately and handle Obstacles Challenge better.
+
+<img width="1920" height="1080" alt="EV3 Sensor Multiplexer" src="https://github.com/user-attachments/assets/6a33c235-dacc-49c6-ae42-a85fce2abceb" />
+
+
+
+**(ii)	3D Printed Part**
+
+We created a 3D-printed casing for the chassis, steering and camera bracket to improve the robot’s overall performance. 
+
+<img width="1920" height="1080" alt="3D Printed Part" src="https://github.com/user-attachments/assets/d07153e4-0b69-4c32-b673-41a6fbfe94fb" />
+
+
+
+**(iii)	Pixy2 Camera**
+
+We use the Pixy2 Camera because it can quickly and accurately detect objects while the robot is moving. In our design, the Pixy2 Camera is mainly used to scan and track the magenta parking lot, green and red pillars, which helps the robot recognize them in time and make the right navigation decisions during the Open and Obstacle Challenges.	. 
+ 
+<img width="873" height="315" alt="Pixy2 Camera" src="https://github.com/user-attachments/assets/76923908-39c1-461f-9ac5-15c529948168" />
+
+
+# 5.0 Improvements and Enhancements
+In this section, we explain the problems we faced while building our self-driving car and the different methods we used to solve them. By studying each problem carefully, we made changes that improved the car performances. The improvements towards the robot can be categorized into two main parts which is the construction and programming parts.
+
+## 5.1 Robot construction
+
+We improved the construction of robot from time to time whenever we encountered challenges. Below are some of the improvements we implemented.
+
+**(i)	Replace the front steering wheel with a smaller size wheel**
+
+Initially, we are using the LEGO tyre 44771 for the front wheel but then we switched to the smaller tyre from Spike Essential Set which is known as the Medium Azure Hard Rubber Tyre. The reduced size improved the car’s maneuverability, making it easier to turn and park in tight spaces. Moreover, the steering’s sensitivity is better when avoiding pillars.
+
+<img width="1920" height="1080" alt="Steering Wheel" src="https://github.com/user-attachments/assets/7fda0ca7-bb76-41e3-87b6-f38f3ff1f7cc" />
+
+
+
+**(ii) Implementing a multiplexer to solve the limited EV3 ports issue**
+
+We also encountered an issue with the limited number of EV3 ports. During the Obstacle Challenge, multiple sensors were required at the same time, which quickly used up all available ports. To overcome this, we used a multiplexer, which allowed us to expand the number of connections. Both ultrasonic sensors were connected to the multiplexer, freeing up the built-in EV3 ports for other essential sensors.
+
+<img width="1920" height="1080" alt="Multiplexer" src="https://github.com/user-attachments/assets/9510c990-b1c7-4e08-984e-801751d1b78f" />
+
+
+ 
+**(iii)	Pixy2 Camera Position Adjustment**
+
+Initially, the camera sometimes detected the wrong objects and treated them as pillars. This happened because the camera angle was too wide. So, we adjusted the Pixy2 camera angle from 75° to 65°. With the smaller angle, the camera focuses better on the actual pillars and avoids capturing unnecessary objects. This helps the robot steer correctly and reduces mistakes during the Obstacle Challenge.
+
+<img width="1920" height="1080" alt="Pixy2 Camera Position Adjustment" src="https://github.com/user-attachments/assets/797b0bd3-025c-4d5d-b04b-95162579759c" />
+
+
+
+
+## 5.2 Robot Programming
+
+We refined the programming of our robot from time to time whenever we faced issues, making adjustments to improve its performance.
+
+(i)	XY-Coordinate Position Tracking
+
+Previously, our robot relied on degree measurements to enter the final section of the challenge. However, during testing, we realised that this method was unreliable because the wall length in the Open Challenge was not always the same. To improve this, we introduced a coordinate-based positioning system. Instead of depending on motor degrees, the robot now calculates its X and Y positions using its gyro angle and wheel speed. This allows the robot to know where it is and move into the final section more accurately, even if the wall layout changes. After applying this improvement, the robot enters the last section consistently and with much better precision.
+
+<img width="732" height="325" alt="XY-Coordinate Position Tracking" src="https://github.com/user-attachments/assets/4521862c-d1b8-4796-b5e4-19dec55eb55b" />
+
+  
+(ii)	Resetting the gyro
+
+When we tested our EV3 robot, we noticed the gyro sensor sometimes drifted. This means that even when the robot was not turning, the angle reading slowly changed. At first, we tried fixing it by adding a software reset in our program. The reset switched the sensor into the correct mode, sent a command to set the angle back to zero, and waited until it was ready. This worked most of the time, especially when we reset it just before the robot started moving.
+
+<img width="812" height="305" alt="GyroReset" src="https://github.com/user-attachments/assets/62b4d82c-9e24-4e2a-b897-ab558c99af7a" />
+
+
+However, we found that the gyro could still drift during the run, even after the software reset. Things like vibration, motor movement, and small calculation errors could still affect the reading. Hence, we decided that a hard reset might work better. A hard reset clears the sensor’s memory more deeply than a software reset, giving a cleaner and more stable reading at the start.
+
+<img width="770" height="666" alt="Unplugging Port" src="https://github.com/user-attachments/assets/fe586ae9-0bc6-4ae9-9c32-23b8e264c217" />
+
+
+
+(iii)	Ensuring continuous operation of ultrasonic sensor
+
+The ultrasonic sensor has an issue where it may turn off unexpectedly during operation without any warning. To address this, we've developed a program that automatically sets the robot's motor speed to zero whenever the ultrasonic sensor detects a value of zero. This precaution effectively stops the robot's movement until the sensor resumes normal operation, reducing any risks associated with the sensor failure. Once the ultrasonic sensor begins detecting values again, the robot will return to its normal speed, ensuring smooth and uninterrupted movement.-attachments/assets/2f800df1-ad0b-4762-b0d1-d7ce408523db" />
+
+<img width="691" height="133" alt="Continuous Operation of Ultrasonic Sensor" src="https://github.com/user-attachments/assets/ba252081-a3ef-421c-8519-f371fb416109" />
+
+
+ 
+(iv)	Adding signal light to EV3 Brick
+
+At first, we did not connect the Pixy camera with the EV3 brick’s LED light. This made it harder to know when the robot had spotted a pillar. During testing, we had to guess whether the robot was reacting at the right time.
+
+To make this easier for competition, we set the LED to change colour when the robot sees a pillar. By looking at the LED and the robot’s position on the map, we can quickly confirm if it is reacting too early or too late. We also thought about adding sound alerts, but in a crowded and noisy place, it would be difficult to hear them. That’s why using lights is a better choice to overcome the problems.
+
+  
+<img width="971" height="838" alt="Signal Light" src="https://github.com/user-attachments/assets/71d4d4e4-2b4f-4e92-a6b3-8afd408744bd" />
+
+
+(v)	PID Steering
+
+Before this, we didn’t use PID steering in our robot’s program. From our observation, the steering corrections were not precise. The robot sometimes drifted off track or turned too much, which made it slower and less accurate.
+
+To solve this, we added PID steering. This allows the robot to constantly adjust its steering to follow the target path more accurately. After adding PID, the robot turns smoothly and stays on track much better. This greatly improved our performance in both of the challenges. The video in the QR code clearly shows the difference when PID steering is applied.
+
+Programming of the PID steering system
+
+<img width="738" height="469" alt="PID Steering" src="https://github.com/user-attachments/assets/fd699bc2-9466-4e43-80b1-1a4963d959a0" />
+
+PID Steering System Demo
+https://youtu.be/QbyQ7LRgAdg 
+
+<img width="472" height="467" alt="PID Steering (Video)" src="https://github.com/user-attachments/assets/a4351a97-15de-46dc-95ab-69a030625d64" />
+
+
+
+
+# Credits
+
+We extend our sincere appreciation to our key supporters. Special thanks to LEGO Education for their generous provision of high-quality EV3 and SPIKE Essential sets. We are also grateful to Bambu Lab, whose advanced 3D printing technology was instrumental in the development of our custom components.
+
+
+
 
 
 
