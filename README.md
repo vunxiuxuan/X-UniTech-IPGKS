@@ -605,8 +605,7 @@ We also encountered an issue with the **limited number of EV3 ports.** During th
 <img width="1920" height="1080" alt="Multiplexer" src="https://github.com/user-attachments/assets/9510c990-b1c7-4e08-984e-801751d1b78f" />
 
 
- 
-**(iii)	Pixy2 Camera Position Adjustment**
+**(iii) Pixy2 Camera Position Adjustment**
 
 Initially, the camera sometimes **detected the wrong objects** and treated them as pillars. This happened because the camera angle was too wide. So, we adjusted the Pixy2 camera angle from **75° to 65°**. With the smaller angle, the camera focuses better on the actual pillars and **avoids capturing unnecessary objects.** This helps the robot steer correctly and reduces mistakes during the Obstacle Challenge.
 
