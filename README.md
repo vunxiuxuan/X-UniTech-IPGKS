@@ -507,7 +507,7 @@ When the robot starts, it first decides whether it will move in a **counterclock
  
 Next, the pillar X value tells the robot where the pillar should appear in the camera’s field of view. By using this value, the robot will avoid the pillar or adjust its path to stay centred when following it. 
 
-<img width="636" height="394" alt="image" src="https://github.com/user-attachments/assets/d665f89f-ba99-44de-a1cf-42b2b6ea9fe4" />
+
 
  
 Next, the pillar X value tells the robot where the pillar should appear in the camera’s field of view. By using this value, the robot will avoid the pillar or adjust its path to stay centred when following it. 
