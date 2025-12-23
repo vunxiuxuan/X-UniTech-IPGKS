@@ -18,7 +18,6 @@ Here attached with the link for our **COMPLETE DOCUMENTATION MODULE** (https://d
 # Table of Contents (Essay)
 - [Introduction](#introduction)
 - [X-UniTech Team, Malaysia](#x-unitech-team-malaysia)
-- [Performance video](#performance-video)
 
 - [1.0 Mobility Management](#10-mobility-management)
   - [1.1 Design of the self-driving car](#11-design-of-the-self-driving-car)
@@ -52,13 +51,6 @@ X-UniTech is a team from Malaysia consisting of three-member engineering team sp
 **Vun Xiu Xuan, Alvin Kong Wei Ee, and Grace Tan Hong Hui.**
 
 <img width="1020" height="764" alt="Team Photo" src="https://github.com/user-attachments/assets/9270f1dd-48bb-4caf-93c4-008a8048cd62" />
-
-# Performance video
-This video demonstrates our autonomous vehicle's design and its operational performance in both the Open Challenge and the Obstacle Challenge. Kindly scan the QR code below or access the link to watch the video for both challenges. https://youtu.be/pi9NsIusMks
-
-<img width="250" height="250" alt="Performance Video (YouTube)" src="https://github.com/user-attachments/assets/e27dbd22-1fb4-488e-ad44-9704f637ad07" />
-
-<img width="250" height="250" alt="Performance Video (Google Drive)" src="https://github.com/user-attachments/assets/9b49bde9-0131-4191-98f3-3d17b8937ec4" />
 
 # 1.0 Mobility Management
 This section details the **mechanical design and propulsion system of our autonomous vehicle.** It covers the **chassis construction, component layout, and the integration of the motors.** Additionally, it introduces the fundamental engineering principles of speed, torque, and power that govern the vehicle's performance.
